@@ -50,13 +50,14 @@ def collate_fn(batch):
     return batched_data, batched_targets, paths
 
 def clean_paragraph(paragraph):
-    cleaned_paragraph= paragraph.replace("'' ", " ").replace(" 's", "'s").replace("``", "").strip('\n')
+    cleaned_paragraph= paragraph.replace("'' ", " ").replace(" '", "'").replace("' ", "'").replace("``", "").strip('\n')
     return cleaned_paragraph
 
 def read_choi_file(path, word2vec, train, return_w2v_tensors = True,manifesto=False):
     seperator = '========' if manifesto else '=========='
     with Path(path).open('r') as f:
         raw_text = f.read()
+#    print(path)
     paragraphs = [clean_paragraph(p) for p in raw_text.strip().split(seperator)
                   if len(p) > 5 and p != "\n"]
     if train:
@@ -72,6 +73,7 @@ def read_choi_file(path, word2vec, train, return_w2v_tensors = True,manifesto=Fa
         else:
             sentences = [s for s in paragraph.split('\n') if len(s.split()) > 0]
 
+#        print(sentences)
         if sentences:
             sentences_count =0
             # This is the number of sentences in the paragraph and where we need to split.

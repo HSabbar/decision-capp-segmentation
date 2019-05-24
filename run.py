@@ -240,7 +240,7 @@ def main(args):
                         'Current best model from epoch {} with p_k {} and threshold {}'.format(j, test_pk, threshold),
                         'green'))
                 best_val_pk = val_pk
-                with (checkpoint_path / 'best_model.t7'.format(j)).open('wb') as f:
+                with (checkpoint_path / 'Meilleur_model.t7'.format(j)).open('wb') as f:
                     torch.save(model, f)
 
     else:

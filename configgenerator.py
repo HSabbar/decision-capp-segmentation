@@ -1,7 +1,8 @@
 import json
 
 jsondata = {
-    "choidataset": "/home/ec2-user/ELS/py3/clean_/text-segmentation/data/choi/1/3-11/",
+    "cuda" : "true",
+    "choidataset": "/home/ec2-user/ELS/py3/clean_/decision-capp-segmentation/data/data-n-micros/",
 }
 
 with open('config.json', 'w') as f:

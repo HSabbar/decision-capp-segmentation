@@ -14,7 +14,6 @@ import utils
 import os
 import sys
 from pathlib2 import Path
-from wiki_loader import WikipediaDataSet
 import accuracy
 from models import naive
 from timeit import default_timer as timer
@@ -89,13 +88,7 @@ def main(args):
         if (args.bySegLength):
             print ('Segment is ',os.path.basename(dataset_path), " :")
 
-        if args.wiki:
-            if (args.wiki_folder):
-                dataset = WikipediaDataSet(dataset_path, word2vec, folder=True, high_granularity=False)
-            else :
-                dataset = WikipediaDataSet(dataset_path, word2vec, high_granularity=False)
-        else:
-            dataset = ChoiDataset(dataset_path , word2vec)
+        dataset = ChoiDataset(dataset_path , word2vec)
 
         dl = DataLoader(dataset, batch_size=args.bs, collate_fn=collate_fn, shuffle=False)
 
