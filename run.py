@@ -86,12 +86,12 @@ def train(model, args, epoch, dataset, logger, optimizer):
 
                 optimizer.step()
                 total_loss += loss.data
-                # logger.debug('Batch %s - Train error %7.4f', i, loss.data[0])
-                pbar.set_description('Training, loss={:.4}'.format(loss.data))
-            # except Exception as e:
-                # logger.info('Exception "%s" in batch %s', e, i)
-                # logger.debug('Exception while handling batch with file paths: %s', paths, exc_info=True)
-                # pass
+                logger.debug('Batch %s - Train error %7.4f', i, loss.data)
+                logger.debug('Exception while handling batch with file paths: %s', paths, exc_info=True)
+                pbar.set_description('Training, len(Data) = {}  i = [{}, {}]  LOSS = {:.4}'.format(len(data[0]), epoch + 1, i + 1, loss.data))
+       # except Exception as e:
+               #logger.info('Exception "%s" in batch %s', e, i)
+#            pass
 
     total_loss = total_loss / len(dataset)
     logger.debug('Training Epoch: {}, Loss: {:.4}.'.format(epoch + 1, total_loss))
@@ -243,12 +243,6 @@ def main(args):
                 with (checkpoint_path / 'Meilleur_model.t7'.format(j)).open('wb') as f:
                     torch.save(model, f)
 
-    else:
-        test_dataset = WikipediaDataSet(args.infer, word2vec=word2vec,
-                                        high_granularity=args.high_granularity)
-        test_dl = DataLoader(test_dataset, batch_size=args.test_bs, collate_fn=collate_fn, shuffle=False,
-                             num_workers=args.num_workers)
-        print (test(model, args, 0, test_dl, logger, 0.4))
 
 
 if __name__ == '__main__':
