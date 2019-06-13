@@ -17,6 +17,9 @@ import accuracy
 import numpy as np
 from termcolor import colored
 
+import psutil
+
+
 torch.multiprocessing.set_sharing_strategy('file_system')
 
 preds_stats = utils.predictions_analysis()
@@ -67,13 +70,12 @@ class Accuracies(object):
 
         return min_pk, min_epoch_windiff, min_threshold
 
-
 def train(model, args, epoch, dataset, logger, optimizer):
     model.train()
     total_loss = float(0)
     with tqdm(desc='Training', total=len(dataset)) as pbar:
         for i, (data, target, paths) in enumerate(dataset):
-            if True:
+            if True  :
                 if i == args.stop_after:
                     break
 
@@ -85,17 +87,21 @@ def train(model, args, epoch, dataset, logger, optimizer):
                 loss.backward()
 
                 optimizer.step()
-                total_loss += loss.data
-                logger.debug('Batch %s - Train error %7.4f', i, loss.data)
+               	# total_loss += loss.data
+                total_loss += loss.item()
+#                usage_memory.debug(dict(psutil.virtual_memory()._asdict()))
+                logger.debug('Batch %s - Train error %7.4f', i, loss.item())
                 logger.debug('Exception while handling batch with file paths: %s', paths, exc_info=True)
-                pbar.set_description('Training, len(Data) = {}  i = [{}, {}]  LOSS = {:.4}'.format(len(data[0]), epoch + 1, i + 1, loss.data))
-       # except Exception as e:
+                pbar.set_description('Training : LOSS = {:.4}'.format(loss.item()))
+                torch.cuda.empty_cache()
+
+           # except Exception as e:
                #logger.info('Exception "%s" in batch %s', e, i)
 #            pass
 
     total_loss = total_loss / len(dataset)
     logger.debug('Training Epoch: {}, Loss: {:.4}.'.format(epoch + 1, total_loss))
-    log_value('Training Loss', total_loss, epoch + 1)
+#    log_value('Training Loss', total_loss, epoch + 1)
 
 
 def validate(model, args, epoch, dataset, logger):
@@ -194,9 +200,9 @@ def main(args):
 
     utils.read_config_file(args.config)
     utils.config.update(args.__dict__)
-    logger.debug('Running with config %s', utils.config)
+#    logger.debug('Running with config %s', utils.config)
 
-    configure(os.path.join('runs', args.expname))
+ #   configure(os.path.join('runs', args.expname))
 
     word2vec = None
 
@@ -248,7 +254,7 @@ def main(args):
 if __name__ == '__main__':
     parser = ArgumentParser()
     parser.add_argument('--cuda', help='Use cuda?', action='store_true')
-    parser.add_argument('--bs', help='Batch size', type=int, default=8)
+    parser.add_argument('--bs', help='Batch size', type=int, default=2)
     parser.add_argument('--test_bs', help='Batch size', type=int, default=5)
     parser.add_argument('--epochs', help='Number of epochs to run', type=int, default=10)
     parser.add_argument('--model', help='Model to run - will import and run')

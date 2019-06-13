@@ -3,10 +3,11 @@ import numpy as np
 from nltk.tokenize import RegexpTokenizer
 import utils
 
-max_words_in_sentence_with_backslash_n = 45
+max_words_in_sentence_with_backslash_n = 65 #45
 sentence_tokenizer = None
 words_tokenizer = None
-missing_stop_words = set(['of', 'a', 'and', 'to'])
+#missing_stop_words = set(['of', 'a', 'and', 'to'])
+missing_stop_words = set(['de', 'a', 'et', 'à'])
 logger = utils.setup_logger(__name__, 'text_manipulation.log', True )
 
 
@@ -20,10 +21,10 @@ def get_punkt():
         return sentence_tokenizer
 
     try:
-        tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
+        tokenizer = nltk.data.load('tokenizers/punkt/french.pickle')
     except exceptions.LookupError:
         nltk.download('punkt')
-        tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
+        tokenizer = nltk.data.load('tokenizers/punkt/french.pickle')
 
     sentence_tokenizer = tokenizer
     return sentence_tokenizer

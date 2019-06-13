@@ -48,7 +48,7 @@ class SentenceEncodingRNN(nn.Module):
 
 
 class Model(nn.Module):
-    def __init__(self, sentence_encoder, hidden=128, num_layers=2):
+    def __init__(self, sentence_encoder, hidden=256, num_layers=2):
         super(Model, self).__init__()
 
         self.sentence_encoder = sentence_encoder
@@ -135,6 +135,7 @@ class Model(nn.Module):
         sentence_outputs = torch.cat(unsorted_doc_outputs, 0)
 
         x = self.h2s(sentence_outputs)
+#        torch.cuda.empty_cache()
         return x
 
 

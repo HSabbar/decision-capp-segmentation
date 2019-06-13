@@ -50,28 +50,17 @@ def main(args):
     print ('Running with threshold: ' + str(args.seg_threshold))
     preds_stats = utils.predictions_analysis()
 
-    if not args.test:
-        word2vec = gensim.models.KeyedVectors.load_word2vec_format(utils.config['word2vecfile'], binary=True)
-    else:
-        word2vec = None
+    word2vec = None
 
     word2vec_done = timer()
     print ('Loading word2vec ellapsed: ' + str(word2vec_done - start) + ' seconds')
     dirname = 'test'
-
-    if args.wiki:
-        dataset_folders = [Path(utils.config['wikidataset']) / dirname]
-        if (args.wiki_folder):
-            dataset_folders = []
-            dataset_folders.append(args.wiki_folder)
-        print ('running on wikipedia')
-    else:
-        if (args.bySegLength):
-            dataset_folders = getSegmentsFolders(utils.config['choidataset'])
-            print ('run on choi by segments length')
-        else :
-            dataset_folders = [utils.config['choidataset']]
-            print ('running on Choi')
+    if (args.bySegLength):
+        dataset_folders = getSegmentsFolders(utils.config['choidataset'])
+        print ('run on choi by segments length')
+    else :
+        dataset_folders = [utils.config['choidataset']]
+        print ('running on Choi')
 
 
     with open(args.model, 'rb') as f:
@@ -155,14 +144,14 @@ def main(args):
 if __name__ == '__main__':
     parser = ArgumentParser()
     parser.add_argument('--cuda', help='Use cuda?', action='store_true')
-    parser.add_argument('--test', help='Test mode? (e.g fake word2vec)', action='store_true')
+    #parser.add_argument('--test', help='Test mode? (e.g fake word2vec)', action='store_true')
     parser.add_argument('--bs', help='Batch size', type=int, default=8)
     parser.add_argument('--model', help='Model to run - will import and run', required=True)
     parser.add_argument('--stop_after', help='Number of batches to stop after', default=None, type=int)
     parser.add_argument('--config', help='Path to config.json', default='config.json')
-    parser.add_argument('--wiki', help='Use wikipedia as dataset?', action='store_true')
+   # parser.add_argument('--wiki', help='Use wikipedia as dataset?', action='store_true')
     parser.add_argument('--bySegLength', help='calc pk on choi by segments length?', action='store_true')
-    parser.add_argument('--wiki_folder', help='path to folder which contains wiki documents')
+   # parser.add_argument('--wiki_folder', help='path to folder which contains wiki documents')
     parser.add_argument('--naive', help='use naive model', action='store_true')
     parser.add_argument('--seg_threshold', help='Threshold for binary classificetion', type=float, default=0.4)
     parser.add_argument('--calc_word', help='Whether to calc P_K by word', action='store_true')
