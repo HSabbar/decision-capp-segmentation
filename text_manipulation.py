@@ -3,10 +3,9 @@ import numpy as np
 from nltk.tokenize import RegexpTokenizer
 import utils
 
-max_words_in_sentence_with_backslash_n = 65 #45
+max_words_in_sentence_with_backslash_n = 150 #45
 sentence_tokenizer = None
 words_tokenizer = None
-#missing_stop_words = set(['of', 'a', 'and', 'to'])
 missing_stop_words = set(['de', 'a', 'et', 'à'])
 logger = utils.setup_logger(__name__, 'text_manipulation.log', True )
 
@@ -115,12 +114,13 @@ def extract_sentence_words(sentence, remove_missing_emb_words = False,remove_spe
 
 
 def word_model(word, model):
+    bash_size = 300
     if model is None:
-        return np.random.randn(1, 300)
+        return np.random.randn(1,bash_size)
     else:
         if word in model:
-            return model[word].reshape(1, 300)
+            return model[word].reshape(1, bash_size)
         else:
-            #print ('Word missing w2v: ' + word)
-            return model['UNK'].reshape(1, 300)
+            print ('Word missing w2v: ' + word)
+            return model['UNK'].reshape(1, bash_size)
 

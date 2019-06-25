@@ -18,6 +18,9 @@ import accuracy
 from models import naive
 from timeit import default_timer as timer
 
+import gc
+
+
 
 logger = utils.setup_logger(__name__, 'test_accuracy.log')
 
@@ -64,7 +67,7 @@ def main(args):
 
 
     with open(args.model, 'rb') as f:
-        model = torch.load(f)
+        model = torch.load(f, map_location = 'cpu')
 
     model = maybe_cuda(model)
     model.eval()
@@ -106,6 +109,8 @@ def main(args):
                 total_loss += batch_loss
                 preds_stats.add(output_seg,target_seg)
 
+
+
                 current_target_idx = 0
                 for k, t in enumerate(targets):
                     document_sentence_count = len(t)
@@ -124,6 +129,14 @@ def main(args):
 
                 logger.debug('Batch %s - error %7.4f, Accuracy: %7.4f', i, batch_loss, batch_accurate / len(target_seg))
                 pbar.set_description('Testing, Accuracy={:.4}'.format(batch_accurate / len(target_seg)))
+
+
+                gc.collect()
+                torch.cuda.empty_cache()
+                del output_prob, output_seg, batch_loss, target_seg, batch_accurate, output
+                del targets_var, data
+
+
 
         average_loss = total_loss / len(dl)
         average_accuracy = total_accurate / total_count
@@ -144,14 +157,11 @@ def main(args):
 if __name__ == '__main__':
     parser = ArgumentParser()
     parser.add_argument('--cuda', help='Use cuda?', action='store_true')
-    #parser.add_argument('--test', help='Test mode? (e.g fake word2vec)', action='store_true')
     parser.add_argument('--bs', help='Batch size', type=int, default=8)
     parser.add_argument('--model', help='Model to run - will import and run', required=True)
     parser.add_argument('--stop_after', help='Number of batches to stop after', default=None, type=int)
     parser.add_argument('--config', help='Path to config.json', default='config.json')
-   # parser.add_argument('--wiki', help='Use wikipedia as dataset?', action='store_true')
     parser.add_argument('--bySegLength', help='calc pk on choi by segments length?', action='store_true')
-   # parser.add_argument('--wiki_folder', help='path to folder which contains wiki documents')
     parser.add_argument('--naive', help='use naive model', action='store_true')
     parser.add_argument('--seg_threshold', help='Threshold for binary classificetion', type=float, default=0.4)
     parser.add_argument('--calc_word', help='Whether to calc P_K by word', action='store_true')

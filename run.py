@@ -20,6 +20,11 @@ from termcolor import colored
 import psutil
 
 
+import gc
+
+
+
+
 torch.multiprocessing.set_sharing_strategy('file_system')
 
 preds_stats = utils.predictions_analysis()
@@ -88,19 +93,21 @@ def train(model, args, epoch, dataset, logger, optimizer):
 
                 optimizer.step()
                	# total_loss += loss.data
-                total_loss += loss.item()
-#                usage_memory.debug(dict(psutil.virtual_memory()._asdict()))
-                logger.debug('Batch %s - Train error %7.4f', i, loss.item())
-                logger.debug('Exception while handling batch with file paths: %s', paths, exc_info=True)
-                pbar.set_description('Training : LOSS = {:.4}'.format(loss.item()))
+                total_loss += float(loss.item())
+              #  pbar.set_description('Training : LOSS = {:.4}'.format(float(loss.item())))
                 torch.cuda.empty_cache()
+                del data, target, output, target_var, loss
+                gc.collect()
+#                usage_memory.debug(dict(psutil.virtual_memory()._asdict()))
+#                logger.debug('Batch %s - Train error %7.4f', i, loss.item())
+#                logger.debug('Exception while handling batch with file paths: %s', paths, exc_info=True)
 
            # except Exception as e:
                #logger.info('Exception "%s" in batch %s', e, i)
 #            pass
 
-    total_loss = total_loss / len(dataset)
-    logger.debug('Training Epoch: {}, Loss: {:.4}.'.format(epoch + 1, total_loss))
+  #  total_loss = total_loss / len(dataset)
+   # logger.debug('Training Epoch: {}, Loss: {:.4}.'.format(epoch + 1, total_loss))
 #    log_value('Training Loss', total_loss, epoch + 1)
 
 
@@ -254,7 +261,7 @@ def main(args):
 if __name__ == '__main__':
     parser = ArgumentParser()
     parser.add_argument('--cuda', help='Use cuda?', action='store_true')
-    parser.add_argument('--bs', help='Batch size', type=int, default=2)
+    parser.add_argument('--bs', help='Batch size', type=int, default=10)
     parser.add_argument('--test_bs', help='Batch size', type=int, default=5)
     parser.add_argument('--epochs', help='Number of epochs to run', type=int, default=10)
     parser.add_argument('--model', help='Model to run - will import and run')

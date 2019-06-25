@@ -10,6 +10,8 @@ from utils import maybe_cuda, setup_logger, unsort
 import numpy as np
 from times_profiler import profiler
 
+import gc
+
 
 logger = setup_logger(__name__, 'train.log')
 profilerLogger = setup_logger("profilerLogger", 'profiler.log', True)
@@ -45,6 +47,7 @@ class SentenceEncodingRNN(nn.Module):
             maxes[i, :] = torch.max(padded_output[:lengths[i], i, :], 0)[0]
 
         return maxes
+        del maxes, padded_output, packed_output
 
 
 class Model(nn.Module):
@@ -135,12 +138,16 @@ class Model(nn.Module):
         sentence_outputs = torch.cat(unsorted_doc_outputs, 0)
 
         x = self.h2s(sentence_outputs)
-#        torch.cuda.empty_cache()
+        torch.cuda.empty_cache()
+        gc.collect()
+
         return x
+
+        del x, sentence_outputs, unsorted_doc_outputs, ordered_document_idx, doc_outputs, padded_x, sentence_lstm_output, packed_docs, docs_tensor, padded_docs, ordered_documents, ordered_doc_sizes, max_doc_size, doc_sizes, index, padded_sentences, big_tensor, packed_tensor, encoded_sentences, unsort_order, unsorted_encodings, max_length, lengths, sort_order, sorted_sentences, sorted_lengths, sentences_per_doc, all_batch_sentences
 
 
 def create():
-    sentence_encoder = SentenceEncodingRNN(input_size=300,
+    sentence_encoder = SentenceEncodingRNN(input_size = 300,
                                            hidden=256,
                                            num_layers=2)
     return Model(sentence_encoder, hidden=256, num_layers=2)
