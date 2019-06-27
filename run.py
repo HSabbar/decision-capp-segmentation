@@ -261,7 +261,7 @@ def main(args):
 if __name__ == '__main__':
     parser = ArgumentParser()
     parser.add_argument('--cuda', help='Use cuda?', action='store_true')
-    parser.add_argument('--bs', help='Batch size', type=int, default=10)
+    parser.add_argument('--bs', help='Batch size', type=int, default=2)
     parser.add_argument('--test_bs', help='Batch size', type=int, default=5)
     parser.add_argument('--epochs', help='Number of epochs to run', type=int, default=10)
     parser.add_argument('--model', help='Model to run - will import and run')
