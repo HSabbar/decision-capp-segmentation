@@ -43,7 +43,7 @@ python3 visualize_model_seg.py --model Model-data-5517/Meilleur_model.t7 --file 
 
 ## Les problémes rencontré : 
 
-Le volume de dataset pour l'apprentissage pose un probléme de mémoire GPU insuffisant `RuntimeError: cuda runtime error : out of memory` 
+Le volume de dataset pour l'apprentissage pose un probléme de mémoire GPU insuffisant `RuntimeError: cuda runtime error : out of memory` quand le Batch est élever 
 
 
 
