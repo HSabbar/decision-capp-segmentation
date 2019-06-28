@@ -11,6 +11,11 @@ pip3 install torch tqdm pathlib2 segeval tensorboard_logger flask
 pip3 install nltk pandas xlrd xlsxwriter termcolor flask_wtf
 ```
 ## Exécuter le processus d'apprentissage :
+
+### Dataset constitué sur la base des Regex 
+
+Le dataset est constitué sur la base des régles réguliere dans **data-processing/DataProcessing.py** plus un filtrage à partir d'un seuil de 6 répture on considérer que la désicion est est un bon exemple pour l'apprentissage 
+
 ### PATH DataSet :
 Ajouter le chemin vres le DataSet d'apprentissage dans le fichier **configgenerator.py** et puis exécuter :
 
