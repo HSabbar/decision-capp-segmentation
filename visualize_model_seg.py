@@ -60,7 +60,10 @@ def main(args):
     word2vec = None
 
     with open(args.model, 'rb') as f:
-        model = torch.load(f)
+        #model = torch.load(f)
+        #for run in cpu
+        model = torch.load(f, map_location='cpu')
+        
         model.eval()
 
 
